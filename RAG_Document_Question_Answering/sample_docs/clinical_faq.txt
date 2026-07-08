@@ -1,0 +1,30 @@
+========================================================================
+PRECISION CLINICAL WORKSTATION - OPERATIONAL FREQUENTLY ASKED QUESTIONS
+========================================================================
+
+Q1: What is the primary purpose of the Precision Clinical Workstation?
+A1: The Precision Clinical Workstation is designed as a multi-modal, multi-fold clinical triage and diagnostic pipeline for cardiovascular risk assessment. It integrates baseline demographics, tabular screening metrics, 12-lead ECG waveforms, Chest X-Rays (CXR), and qualitative clinical NLP features to classify arrhythmia, triage cardiomegaly/lung structural markers, and calculate a consolidated patient risk profile.
+
+Q2: How does the triage threshold logic work?
+A2: The workstation uses a dual-fold gateway architecture:
+- Fold 1 (Tabular Triage): Screens all patient records using a high-efficiency XGBoost classifier trained on demographic data and baseline bio-markers.
+- Fold 2 (Deep Gateway): Automatically triggers deep learning models (ECG neural networks, computer vision, and biomedical NLP) only for patients whose Fold 1 tabular risk score meets or exceeds 15%. This optimizes clinician time and computational resource usage.
+
+Q3: What models are used in Fold 2 (Deep Gateway)?
+A3: Fold 2 leverages three domain-specific networks:
+1. 12-Lead ECG Classification: A PyTorch 1D ResNet (specifically xresnet1d101) capable of classifying up to 71 arrhythmias.
+2. Chest X-Ray (CXR) Pathology: DenseNet-121 (from the torchxrayvision library) mapping structural indicators like cardiomegaly and pleural effusion.
+3. Clinical Notes Parser: A BioBERT biomedical NLP transformer used to extract clinical descriptors and negative findings from qualitative notes.
+
+Q4: What security credentials are required to decrypt patient information?
+A4: All patient records are encrypted at rest using AES-256 symmetric cipher keys in a SQLite database to maintain HIPAA compliance. To access and view patient details in Tab 4 (HIPAA Decryption Portal), a clinician must authenticate using their 10-digit National Provider Identifier (NPI). The default test clinician NPI is 1982736450.
+
+Q5: Where are ECG signal classifications benchmarked?
+A5: ECG waveforms are parsed using the PTB-XL ECG dataset benchmark suite (ecg_ptbxl_benchmarking framework), converting signal segments into classification distributions.
+
+Q6: How can clinicians generate diagnostic reports?
+A6: The report generation module uses ReportLab in Python to dynamically construct and format a clinical PDF report containing diagnostic summary cards, ECG analysis charts, CXR pathology predictions, SHAP visual explanations, and NPI verification logs.
+
+========================================================================
+END OF DOCUMENT
+========================================================================

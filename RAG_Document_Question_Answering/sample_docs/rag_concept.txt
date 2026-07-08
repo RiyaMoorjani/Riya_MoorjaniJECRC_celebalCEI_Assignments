@@ -1,0 +1,38 @@
+========================================================================
+RETRIEVAL-AUGMENTED GENERATION (RAG) SYSTEM ARCHITECTURE REFERENCE
+========================================================================
+
+1. WHAT IS RAG?
+Retrieval-Augmented Generation (RAG) is a design pattern used in Artificial Intelligence to improve the accuracy and reliability of Large Language Models (LLMs). Instead of relying solely on the static facts learned during pre-training, a RAG system queries external, authoritative data sources (like private company files, notes, or PDFs) containing relevant knowledge, appends that information to the user's prompt as context, and then invokes the LLM to write a factual response.
+
+2. ADVANTAGES OF RAG:
+- Reduces Hallucinations: The generator is forced to ground its response in the provided context snippets.
+- Custom/Private Data Support: RAG allows querying private corpora (resumes, textbooks, papers) without the need for expensive fine-tuning.
+- Real-time Updates: You can update the document files or database instantly without retraining the neural network.
+
+3. THE CORE COMPONENTS:
+
+A. DOCUMENT INGESTION & TEXT EXTRACTION:
+Ingestion is the process of reading raw document formats (e.g. PDFs, TXT, markdown, HTML) and converting them into clean string buffers. PyPDF, PyMuPDF, and pdfplumber are standard Python tools for PDF extraction.
+
+B. TEXT CHUNKING:
+Because LLMs have limited context windows and long prompts can increase latency, documents are divided into smaller, coherent blocks called "chunks." Chunking strategies typically involve a chunk size (e.g. 500 characters) and a chunk overlap (e.g. 100 characters). The overlap ensures that sentences or definitions split across chunk boundaries are not lost.
+
+C. EMBEDDINGS CREATION:
+Embeddings are mathematical vector representations (lists of floating-point numbers) of the semantic meaning of text chunks. Text segments with similar meanings (e.g., "cardiovascular risk" and "heart attack probability") will lie closer together in high-dimensional vector space. Embedding models include Google's text-embedding-004 and Cohere's embed-english-v3.0.
+
+D. VECTOR DATABASE:
+A vector database is optimized to store embeddings alongside original text metadata and run extremely fast nearest-neighbor similarity searches (using metrics like cosine similarity or Euclidean distance). Examples of vector stores include FAISS (Facebook AI Similarity Search), ChromaDB, Pinecone (cloud-based), and Simple NumPy matrices.
+
+E. CONTEXT RETRIEVAL & QUERY PROCESSING:
+When a user asks a question:
+1. The question is converted into a query vector using the same embedding model.
+2. The vector store searches for the top K closest chunk vectors.
+3. The matching text snippets are retrieved.
+
+F. RESPONSE GENERATION:
+The retrieved text snippets are inserted into a prompt template, which instructs the language model to answer the query using only the provided facts. The LLM generates the final answer for the user.
+
+========================================================================
+END OF REFERENCE
+========================================================================
